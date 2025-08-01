@@ -35,11 +35,11 @@ function createTables() {
     `);
 
     db.run(`
-      CREATE TABLE IF NOT EXISTS gym_services (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        service_name TEXT,
-        service_price REAL
-      )
+CREATE TABLE IF NOT EXISTS gym_services (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  service_name TEXT,
+  service_price REAL
+);
     `);
 
     db.run(`

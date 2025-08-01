@@ -193,6 +193,110 @@ router.delete('/equipment/:id', (req, res) => {
   });
 });
 
+// equipment routes
+
+
+
+
+
+
+
+// gym services routes
+
+
+// ✅ CREATE a new service
+router.post('/services', (req, res) => {
+  const { service_name, service_price } = req.body;
+
+  if (!service_name || !service_price) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  const sql = 'INSERT INTO gym_services (service_name, service_price) VALUES (?, ?)';
+  db.run(sql, [service_name, service_price], function (err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error inserting service' });
+    }
+    res.status(201).json({
+      message: 'Service created successfully',
+      service_id: this.lastID,
+    });
+  });
+});
+
+// ✅ READ a service by ID
+router.get('/services/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = 'SELECT * FROM gym_services WHERE id = ?';
+  db.get(sql, [id], (err, row) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error fetching service' });
+    }
+    if (!row) {
+      return res.status(404).json({ message: 'Service not found' });
+    }
+    res.status(200).json(row);
+  });
+});
+
+// ✅ READ all services
+router.get('/services', (req, res) => {
+  db.all('SELECT * FROM gym_services', [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error fetching services' });
+    }
+    res.status(200).json(rows);
+  });
+});
+
+// ✅ UPDATE a service
+router.put('/services/:id', (req, res) => {
+  const { service_name, service_price } = req.body;
+  const { id } = req.params;
+
+  const sql = 'UPDATE gym_services SET service_name = ?, service_price = ? WHERE id = ?';
+  db.run(sql, [service_name, service_price, id], function (err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error updating service' });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'Service not found' });
+    }
+    res.status(200).json({ message: 'Service updated successfully' });
+  });
+});
+
+
+// ✅ DELETE a service
+router.delete('/services/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = 'DELETE FROM gym_services WHERE id = ?';
+  db.run(sql, [id], function (err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error deleting service' });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'Service not found' });
+    }
+    res.status(200).json({ message: 'Service deleted successfully' });
+  });
+});
+
+// gym services routes
+
+
+
+
+
+
+
 
 
 
