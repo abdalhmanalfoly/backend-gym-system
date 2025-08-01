@@ -116,7 +116,7 @@ router.put('/members/:id', (req, res) => {
   });
 });
 
-// 📌 Delete member by ID 
+// 📌 Delete member by ID done
 router.delete('/members/:id', (req, res) => {
   const id = req.params.id;
   db.run('DELETE FROM members WHERE id = ?', [id], function (err) {
@@ -127,6 +127,73 @@ router.delete('/members/:id', (req, res) => {
 });
 
 // memmber routes
+
+
+
+
+
+
+// equipment routes
+
+
+// Create equipment
+router.post('/equipment', (req, res) => {
+  const { equipment_name, equipment_description, purchase_date, condition, quantity } = req.body;
+  const query = `
+    INSERT INTO gym_equipment (equipment_name, equipment_description, purchase_date, condition, quantity)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+  db.run(query, [equipment_name, equipment_description, purchase_date, condition, quantity], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.status(201).json({ id: this.lastID });
+  });
+});
+
+// Read all equipment
+router.get('/equipment', (req, res) => {
+  db.all('SELECT * FROM gym_equipment', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+// Read one equipment by ID
+router.get('/equipment/:id', (req, res) => {
+  const { id } = req.params;
+  db.get('SELECT * FROM gym_equipment WHERE id = ?', [id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(404).json({ error: 'Equipment not found' });
+    res.json(row);
+  });
+});
+
+// Update equipment
+router.put('/equipment/:id', (req, res) => {
+  const { id } = req.params;
+  const { equipment_name, equipment_description, purchase_date, condition, quantity } = req.body;
+  const query = `
+    UPDATE gym_equipment
+    SET equipment_name = ?, equipment_description = ?, purchase_date = ?, condition = ?, quantity = ?
+    WHERE id = ?
+  `;
+  db.run(query, [equipment_name, equipment_description, purchase_date, condition, quantity, id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    if (this.changes === 0) return res.status(404).json({ error: 'Equipment not found' });
+    res.json({ message: 'Equipment updated successfully' });
+  });
+});
+
+// Delete equipment
+router.delete('/equipment/:id', (req, res) => {
+  const { id } = req.params;
+  db.run('DELETE FROM gym_equipment WHERE id = ?', [id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    if (this.changes === 0) return res.status(404).json({ error: 'Equipment not found' });
+    res.json({ message: 'Equipment deleted successfully' });
+  });
+});
+
+
 
 
 

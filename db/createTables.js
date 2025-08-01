@@ -70,9 +70,7 @@ function createTables() {
         equipment_description TEXT,
         purchase_date DATE,
         condition TEXT,
-        quantity INTEGER,
-        staff_id INTEGER,
-        FOREIGN KEY (staff_id) REFERENCES staff(id)
+        quantity INTEGER
       )
     `);
 
